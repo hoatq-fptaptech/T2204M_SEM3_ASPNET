@@ -37,6 +37,7 @@ namespace T2204M_ASPNETMVC.Controllers
 
         public IActionResult Create()
         {
+            //ViewBag.categories = _context.Categories.ToList();
             return View();
         }
 
