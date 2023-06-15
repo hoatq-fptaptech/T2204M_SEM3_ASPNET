@@ -9,7 +9,7 @@ namespace T2204M_ASPNETMVC.Entities
 		}
 
 		public DbSet<Product> Products { get; set; }
-
+		public DbSet<Category> Categories { get; set; }
 	}
 }
 
