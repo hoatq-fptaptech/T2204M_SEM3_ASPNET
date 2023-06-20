@@ -12,9 +12,10 @@
 <div class="col-6">
     <table class="table">
         <thead>
-        <th>Id</th>
-        <th>Name</th>
-        <th>Products count</th>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Products count</th>
+            <th></th>
         </thead>
         <tbody>
             @foreach (var item in Model)
@@ -23,6 +24,13 @@
                     <td>@item.Id</td>
                     <td>@item.Name</td>
                     <td>@item.Products.Count</td>
+                    <td>
+                        @Html.ActionLink("Sửa thông tin", "Edit", new { Id = item.Id })
+
+                        <a href="@Url.ActionLink("Xoá","Delete",new {Id=item.Id })"
+                           onclick="return confirm('Xác nhận xoá @item.Name ?')"
+                           class="text-danger">Xoá</a>
+                    </td>
                 </tr>
 
             }

@@ -52,6 +52,61 @@ namespace T2204M_ASPNETMVC.Controllers
             }
             return View(viewModel);
         }
+
+        [HttpGet]
+        public IActionResult Edit(int Id)
+        {
+            var category = _context.Categories.Find(Id);
+            if (category == null)
+                return NotFound();
+            return View(new EditCategoryViewModel { Id=Id,Name=category.Name});
+        }
+
+        [HttpPost]
+        public IActionResult Edit(EditCategoryViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Categories.Update(new Category { Id = model.Id, Name = model.Name });
+                _context.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult Delete(int Id)
+        {
+            var category = _context.Categories.Find(Id);
+            if(category == null)
+            {
+                return NotFound();
+            }
+            _context.Categories.Remove(category);
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public IActionResult Upload()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Upload(IFormFile Image)
+        {
+            if(Image == null)
+            {
+                return BadRequest("Vui lòng up file đính kèm");
+            }
+            var path = "wwwroot/uploads";
+            var fileName = Guid.NewGuid().ToString() + Path.GetFileName(Image.FileName);
+            var upload = Path.Combine(Directory.GetCurrentDirectory(), path, fileName);
+            Image.CopyTo(new FileStream(upload, FileMode.Create));
+            var rs = $"{Request.Scheme}://{Request.Host}/uploads/{fileName}";
+            return Ok(rs);
+        }
     }
 }
 
