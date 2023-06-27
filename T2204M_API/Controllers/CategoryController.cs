@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using T2204M_API.Entities;
 using T2204M_API.DTOs;
+using Microsoft.EntityFrameworkCore;
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace T2204M_API.Controllers
@@ -24,11 +25,16 @@ namespace T2204M_API.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var categories = _context.Categories.ToList();
+            var categories = _context.Categories.Include(c=>c.Products).ToList();
             List<CategoryDTO> list = new List<CategoryDTO>();
             foreach(var item in categories)
             {
-                list.Add(new CategoryDTO {id=item.Id,name=item.Name });
+                List<ProductDTO> plist = new List<ProductDTO>();
+                foreach(var p in item.Products)
+                {
+                    plist.Add(new ProductDTO { id = p.Id, name = p.Name,price=p.Price,description=p.Description });
+                }
+                list.Add(new CategoryDTO {id=item.Id,name=item.Name,products=plist});
             }
             return Ok(list);
         }
@@ -55,6 +61,30 @@ namespace T2204M_API.Controllers
                 return Created($"get-by-id?id={category.Id}",new CategoryDTO { id=category.Id,name=category.Name});
             }
             return BadRequest();
+        }
+
+        [HttpPut]
+        public IActionResult Update(CategoryDTO data)
+        {
+            if (ModelState.IsValid)
+            {
+                var category = new Category { Id = data.id, Name = data.name };
+                _context.Categories.Update(category);
+                _context.SaveChanges();
+                return NoContent();
+            }
+            return BadRequest();
+        }
+
+        [HttpDelete]
+        public IActionResult Delete(int id)
+        {
+            var category = _context.Categories.Find(id);
+            if (category == null)
+                return NotFound();
+            _context.Categories.Remove(category);
+            _context.SaveChanges();
+            return NoContent();
         }
     }
 }
