@@ -21,6 +21,8 @@ public partial class T2204mApiContext : DbContext
 
     public virtual DbSet<Product> Products { get; set; }
 
+    public virtual DbSet<User> Users { get; set; }
+
 //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
 //        => optionsBuilder.UseSqlServer("Data Source=localhost,1433; Database=T2204M_API;User Id=sa;Password=sa123456;TrustServerCertificate=true");
@@ -96,6 +98,28 @@ public partial class T2204mApiContext : DbContext
                 .HasForeignKey(d => d.CategoryId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__products__catego__4222D4EF");
+        });
+
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__users__3213E83F931AD76F");
+
+            entity.ToTable("users");
+
+            entity.HasIndex(e => e.Email, "UQ__users__AB6E6164E044D71B").IsUnique();
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Email)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("email");
+            entity.Property(e => e.Fullname)
+                .HasMaxLength(150)
+                .HasColumnName("fullname");
+            entity.Property(e => e.Password)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("password");
         });
 
         OnModelCreatingPartial(modelBuilder);

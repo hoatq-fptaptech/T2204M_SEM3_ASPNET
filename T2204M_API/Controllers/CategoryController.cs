@@ -15,7 +15,7 @@ namespace T2204M_API.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly T2204mApiContext _context;
-
+        //Scaffold-DbContext "Data Source=localhost,1433; Database=T2204M_API;User Id=sa;Password=sa123456;TrustServerCertificate=true" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Entities -Force
         public CategoryController(T2204mApiContext context)
         {
             _context = context;
