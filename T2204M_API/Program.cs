@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add Cors
@@ -30,6 +32,23 @@ var connectionString = builder.Configuration.GetConnectionString("T2204M_API");
 builder.Services.AddDbContext<T2204M_API.Entities.T2204mApiContext>(
         options => options.UseSqlServer(connectionString)
     );
+// Add Authetication JWT Bearer
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        };
+    });
+
 
 var app = builder.Build();
 
@@ -43,6 +62,8 @@ if (app.Environment.IsDevelopment())
 app.UseCors();
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

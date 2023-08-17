@@ -81,6 +81,51 @@ namespace T2204M_API.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+        [HttpPost]
+        [Route("login")]
+        public IActionResult Login(UserLogin login)
+        {
+            try
+            {
+                var user = _context.Users.Where(u => u.Email.Equals(login.Email)).First();
+                if (user == null)
+                    return Unauthorized();
+                bool verifiedPassword = BCrypt.Net.BCrypt.Verify(login.Password, user.Password);
+                if (!verifiedPassword)
+                    return Unauthorized();
+                return Ok(new UserDTO()
+                {
+                    Email = user.Email,
+                    Fullname = user.Fullname,
+                    Token = GenJWT(user)
+                });
+            }
+            catch(Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+            
+        }
+
+        [HttpGet]
+        [Route("profile")]
+        public IActionResult Profile()
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (!identity.IsAuthenticated)
+                return Unauthorized("Not Authorized");
+            try
+            {
+                var userClaims = identity.Claims;
+                var userId = userClaims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                var user = _context.Users.Find(Convert.ToInt32(userId));
+                return Ok(new UserDTO{Email=user.Email,Fullname=user.Fullname });
+            }catch(Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }
 
