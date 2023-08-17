@@ -75,7 +75,7 @@ namespace T2204M_API.Controllers
                     _configuration["JWT:Issuer"],
                     _configuration["JWT:Audience"],
                     payload,
-                    expires: DateTime.Now.AddDays(1),
+                    expires: DateTime.Now.AddMinutes(Convert.ToInt32(_configuration["Jwt:LifeTime"])),
                     signingCredentials:signatureKey
                 );
 
