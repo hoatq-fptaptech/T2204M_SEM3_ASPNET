@@ -30,11 +30,15 @@
     <None Remove="Entities\" />
     <None Remove="DTOs\" />
     <None Remove="ViewModels\" />
+    <None Remove="Requirements\" />
+    <None Remove="Handlers\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Entities\" />
     <Folder Include="DTOs\" />
     <Folder Include="ViewModels\" />
+    <Folder Include="Requirements\" />
+    <Folder Include="Handlers\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\.editorconfig" />

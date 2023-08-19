@@ -2,6 +2,8 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add Cors
@@ -29,6 +31,7 @@ builder.Services.AddSwaggerGen();
 
 // Add Connection Database
 var connectionString = builder.Configuration.GetConnectionString("T2204M_API");
+T2204M_API.Entities.T2204mApiContext.ConnectionString = connectionString;
 builder.Services.AddDbContext<T2204M_API.Entities.T2204mApiContext>(
         options => options.UseSqlServer(connectionString)
     );
@@ -48,7 +51,22 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
         };
     });
-
+// add Policy
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("SuperAdmin", policy =>
+                policy.RequireClaim(ClaimTypes.Email, "admin@gmail.com"));
+//options.AddPolicy("SuperAdminXX", policy =>
+//            policy.RequireClaim(ClaimTypes.Email));
+options.AddPolicy("ValidYearOld", policy => policy.AddRequirements(
+            new T2204M_API.Requirements.YearOldRequirement(
+                Convert.ToInt32(builder.Configuration["ValidYearOld:Min"]),
+                Convert.ToInt32(builder.Configuration["ValidYearOld:Max"])
+            )
+        )
+    );
+});
+builder.Services.AddSingleton<IAuthorizationHandler, T2204M_API.Handlers.ValidYearOldHandler>();
 
 var app = builder.Build();
 

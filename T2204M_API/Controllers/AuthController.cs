@@ -13,6 +13,7 @@ using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authorization;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace T2204M_API.Controllers
@@ -110,6 +111,8 @@ namespace T2204M_API.Controllers
 
         [HttpGet]
         [Route("profile")]
+        //[Authorize(Roles = "user")]
+        [Authorize(Policy = "ValidYearOld")]
         public IActionResult Profile()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
