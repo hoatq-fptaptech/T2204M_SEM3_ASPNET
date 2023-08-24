@@ -80,3 +80,4 @@
 /Users/quanghoatrinh/Documents/Aptech/SEM3/T2204M/T2204M/T2204M_API/bin/Debug/net7.0/Newtonsoft.Json.Bson.dll
 /Users/quanghoatrinh/Documents/Aptech/SEM3/T2204M/T2204M/T2204M_API/bin/Debug/net7.0/BCrypt.Net.dll
 /Users/quanghoatrinh/Documents/Aptech/SEM3/T2204M/T2204M/T2204M_API/bin/Debug/net7.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
+/Users/quanghoatrinh/Documents/Aptech/SEM3/T2204M/T2204M/T2204M_API/bin/Debug/net7.0/RabbitMQ.Client.dll
